@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PerpusOnline - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Check login status -->
+    <script>
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden bg-white shadow-sm border-b sticky top-0 z-30">
+        <div class="flex justify-between items-center px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="text-lg font-bold text-gray-800">PerpusOnline</h1>
+            </div>
+            <button onclick="logout()" 
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm transition">
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Desktop Header -->
+    <div class="hidden lg:block bg-white shadow-sm border-b">
+        <div class="flex justify-between items-center px-6 py-4">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">PerpusOnline</h1>
+                <p class="text-sm text-gray-600">Welcome, <span id="userEmail"></span></p>
+            </div>
+            <button onclick="logout()" 
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Mobile Sidebar Overlay -->
+        <div class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onclick="toggleMobileMenu()"></div>
+
+        <!-- Mobile Sidebar -->
+        <div class="mobile-menu fixed left-0 top-0 w-64 bg-white h-full shadow-2xl z-50 lg:hidden">
+            <!-- User Profile -->
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">OR</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-800">Olivia Rhye</h2>
+                        <p class="text-sm text-gray-600">Pengguna Biasa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <nav class="p-4">
+                <div class="space-y-1">
+                    <div class="bg-blue-50 text-blue-600 rounded-lg p-3 font-medium flex items-center space-x-3">
+                        <span>📊</span>
+                        <span>Dasbor</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>🔍</span>
+                        <span>Pencarian Buku</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>📚</span>
+                        <span>Pinjaman Saya</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>📖</span>
+                        <span>Riwayat Pinjaman</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>⚙️</span>
+                        <span>Pengaturan Profil</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <!-- Logout -->
+                <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                    <span>🚪</span>
+                    <span>Keluar</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Desktop Sidebar -->
+        <div class="hidden lg:block w-64 bg-white shadow-lg min-h-screen">
+            <!-- User Profile -->
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">OR</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-800">Olivia Rhye</h2>
+                        <p class="text-sm text-gray-600">Pengguna Biasa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <nav class="p-4">
+                <div class="space-y-1">
+                    <div class="bg-blue-50 text-blue-600 rounded-lg p-3 font-medium flex items-center space-x-3">
+                        <span>📊</span>
+                        <span>Dasbor</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>🔍</span>
+                        <span>Pencarian Buku</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>📚</span>
+                        <span>Pinjaman Saya</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>📖</span>
+                        <span>Riwayat Pinjaman</span>
+                    </div>
+                    <div class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                        <span>⚙️</span>
+                        <span>Pengaturan Profil</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <!-- Logout -->
+                <div onclick="logout()" class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                    <span>🚪</span>
+                    <span>Keluar</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 lg:p-6 w-full">
+            <!-- Header -->
+            <div class="mb-6 lg:mb-8">
+                <h2 class="text-xl lg:text-2xl font-bold text-gray-800 mb-2"># Dashor Saya</h2>
+                <p class="text-gray-600 text-sm lg:text-base">**Selenesi Dating, Official**</p>
+            </div>
+
+            <!-- Stats Cards - Compact Version -->
+            <div class="mb-6 lg:mb-8">
+                <div class="stats-grid">
+                    <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                        <h3 class="text-xs font-medium text-gray-500 mb-2">Buku Seizing Division</h3>
+                        <p class="text-2xl font-bold text-gray-800">5</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                        <h3 class="text-xs font-medium text-gray-500 mb-2">Mekwari Batar Wakku</h3>
+                        <p class="text-2xl font-bold text-gray-800">1</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                        <h3 class="text-xs font-medium text-gray-500 mb-2">NoriRisai Pening</h3>
+                        <p class="text-2xl font-bold text-gray-800">2</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-200 my-6 lg:my-8"></div>
+
+            <!-- Phyteman Saat ini Section - Mobile Friendly Table -->
+            <div class="mb-6 lg:mb-8">
+                <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4"># Phyteman Saat ini</h3>
+                
+                <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                    <div class="table-container">
+                        <table class="w-full min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Ausul Bulu</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Tenggal Prijaim</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Tenggal Jabah Tempo</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Abci</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-3 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">The Loan Staring</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">15 Oct 2023</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">28 Oct 2023</td>
+                                    <td class="px-3 py-2 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">(Proposing)</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">Abcric Hadda</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">10 Oct 2023</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">-</td>
+                                    <td class="px-3 py-2 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">(Proposing)</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">Supione: A Brief History of Humankind</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">05 Oct 2023</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">19 Oct 2023</td>
+                                    <td class="px-3 py-2 whitespace-nowrap">
+                                        <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">(Proposing)</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-200 my-6 lg:my-8"></div>
+
+            <!-- Rekomendasi Untuk Anda Section - Mobile Friendly Table -->
+            <div>
+                <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4"># Rekomendasi Untuk Anda</h3>
+                
+                <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                    <div class="table-container">
+                        <table class="w-full min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Bubok</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Konkurs</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Turkutısı İhraçları</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Hazırlıkları</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b whitespace-nowrap">Kurumları</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-3 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">Ausul Bulu Pretting Sur</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Bukar Kıtlak</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Kistir Kitalk</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Hisli Hindu Bası</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Bagudi Hospital</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 text-sm font-medium text-gray-900 whitespace-nowrap">Yano Tanda</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Perviz Loh</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Programg Tempo</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Teşhleri</td>
+                                    <td class="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">Tekni Sigimi</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tampilkan email user
+        const userEmail = localStorage.getItem('userEmail') || 'User';
+        document.getElementById('userEmail').textContent = userEmail;
+        
+        // Function logout
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const overlay = document.querySelector('.overlay');
+            mobileMenu.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Menu interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('nav div:not(.bg-blue-50)');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    menuItems.forEach(i => i.classList.remove('bg-blue-50', 'text-blue-600'));
+                    menuItems.forEach(i => i.classList.add('text-gray-600', 'hover:bg-gray-100'));
+                    
+                    // Add active class to clicked item (except logout)
+                    if (!this.querySelector('span').textContent.includes('Keluar')) {
+                        this.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                        this.classList.add('bg-blue-50', 'text-blue-600');
+                    }
+                    
+                    // Close mobile menu after selection
+                    if (window.innerWidth < 1024) {
+                        toggleMobileMenu();
+                    }
+                });
+            });
+        });
+
+        // Close mobile menu on resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                const mobileMenu = document.querySelector('.mobile-menu');
+                const overlay = document.querySelector('.overlay');
+                mobileMenu.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
