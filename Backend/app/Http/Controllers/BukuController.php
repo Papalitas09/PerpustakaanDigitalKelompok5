@@ -12,15 +12,43 @@ class BukuController extends Controller
      */
     public function index()
     {
-        //
+        $buku = Buku::all();
+        return response()->json(
+            [
+                'data' => $buku,
+                'status' => '200 || Success',
+            ], 200
+        );
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $data = $request->validate([
+            'judul' => 'required|string',
+            'pengarang' => 'required:string',
+            'penerbit' => 'required|string',
+            'cover' => 'required|string',
+            'tanggal_terbit' => 'required',
+            'deskripsi_buku' => 'string',
+            'stok_buku' => 'required|integer',
+            'isbn' => 'required'
+        ]);
+
+        if($data){
+            return response()->json([
+                'message' => 'Clear',
+                'status' => '200 | Ok',
+                'data' => $data
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not Clear',
+                'status' => 'error',
+            ]);
+        }
     }
 
     /**
