@@ -13,7 +13,11 @@ Route::get('/user', function (Request $request) {
 // //admin
 // Route::get('/Admin/Dashboard','');
 // Route::apiResource('/Admin/Akun', );
+
 Route::apiResource('/Admin/Buku', BukuController::class);
+
+// Route::apiResource('/Admin/Buku', );
+
 
 // //petugas
 // Route::get('/petugas/Dashboard','');
