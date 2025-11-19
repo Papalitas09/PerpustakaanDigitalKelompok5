@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id('id_buku');
             $table->string('judul');
             $table->string('pengarang');
+            $table->string('cover');
+            $table->string('isbn');
             $table->string('penerbit');
             $table->string('deskripsi_buku');
             $table->integer('stok_buku');
