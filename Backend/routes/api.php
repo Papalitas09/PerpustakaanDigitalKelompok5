@@ -18,7 +18,6 @@ Route::apiResource('/Admin/Buku', BukuController::class);
 
 // Route::apiResource('/Admin/Buku', );
 
-
 // //petugas
 // Route::get('/petugas/Dashboard','');
 // Route::apiResource('Petugas/Buku');

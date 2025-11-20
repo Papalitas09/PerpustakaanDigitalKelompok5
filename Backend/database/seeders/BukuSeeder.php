@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use Faker\Factory as Faker;
 class BukuSeeder extends Seeder
 {
     /**
@@ -13,12 +13,18 @@ class BukuSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table("bukus")->insert([
-            'judul' => "mariojoe",
-            "pengarang" => "Ibrahim",
-            "penerbit" => "John",
-            "cover" => "eg",
-            "tanggal_terbit" => ""
-        ]);
+        $faker = Faker::create();
+        for($o = 0; $o <= 20; $o++){
+            DB::table("bukus")->insert([
+                'judul' => "Bulan",
+                "pengarang" => $faker->name(),
+                "cover" => "Belom ada",
+                "isbn" => "0845486" ,
+                "penerbit" => "John Obami",
+                "deskripsi_buku" => "jelek" ,
+                "stok_buku" => $faker->randomNumber(),
+                "tanggal_terbit" => "2025-12-25",
+            ]);
+        }
     }
 }
