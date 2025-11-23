@@ -16,7 +16,7 @@ Route::post('login', [AuthController::Class, 'Login']);
 // Route::get('/Pengguna/Dashboard','');
 // //admin
 // Route::get('/Admin/Dashboard','');
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'check.role'])->group(function () {
     Route::apiResource('/Admin/Akun', PenggunaController::class);
     Route::apiResource('/Admin/Buku', BukuController::class);
 });
