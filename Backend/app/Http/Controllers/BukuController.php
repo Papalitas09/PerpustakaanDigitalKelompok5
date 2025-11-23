@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use Auth;
 use Illuminate\Http\Request;
 
 class BukuController extends Controller
