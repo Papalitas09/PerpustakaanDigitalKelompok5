@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7hz Library - Pinjaman Saya</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        .book-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        .scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+        .status-dipinjam {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .status-dikembalikan {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .status-terlambat {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Check login status -->
+    <script>
+        if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden bg-white shadow-sm border-b sticky top-0 z-30">
+        <div class="flex justify-between items-center px-4 py-3">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h1 class="text-lg font-bold text-gray-800">7hz Library</h1>
+            </div>
+            <button onclick="logout()" 
+                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm transition">
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Desktop Header -->
+    <div class="hidden lg:block bg-white shadow-sm border-b">
+        <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-xl font-bold text-gray-800">7hz Library</h1>
+                <!-- Search Bar -->
+                <div class="relative w-96">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Cari judul, penulis, atau ISBN...">
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <p class="text-sm text-gray-600">Welcome, <span id="userEmail" class="font-medium">m.halkal.alfat@gmail.com</span></p>
+                <button onclick="logout()" 
+                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Mobile Sidebar Overlay -->
+        <div class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onclick="toggleMobileMenu()"></div>
+
+        <!-- Mobile Sidebar -->
+        <div class="mobile-menu fixed left-0 top-0 w-64 bg-white h-full shadow-2xl z-50 lg:hidden">
+            <!-- User Profile -->
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">MH</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-800">Scripta</h2>
+                        <p class="text-sm text-gray-600">Pengguna Biasa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <nav class="p-4">
+                <div class="space-y-1">
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="dashboard">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="all-books">
+                        <i class="fas fa-book-open w-5"></i>
+                        <span>All Books</span>
+                    </div>
+                    <div class="menu-item bg-blue-50 text-blue-600 rounded-lg p-3 font-medium flex items-center space-x-3" data-page="my-loans">
+                        <i class="fas fa-book w-5"></i>
+                        <span>Pinjaman Saya</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="loan-history">
+                        <i class="fas fa-history w-5"></i>
+                        <span>Riwayat Pinjaman</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="profile">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>Pengaturan Profil</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <!-- Logout -->
+                <div onclick="logout()" class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Keluar</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Desktop Sidebar -->
+        <div class="hidden lg:block w-64 bg-white shadow-lg min-h-screen">
+            <!-- User Profile -->
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">MH</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-gray-800">Scripta</h2>
+                        <p class="text-sm text-gray-600">Pengguna Biasa</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <nav class="p-4">
+                <div class="space-y-1">
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="dashboard">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="all-books">
+                        <i class="fas fa-book-open w-5"></i>
+                        <span>All Books</span>
+                    </div>
+                    <div class="menu-item bg-blue-50 text-blue-600 rounded-lg p-3 font-medium flex items-center space-x-3" data-page="my-loans">
+                        <i class="fas fa-book w-5"></i>
+                        <span>Pinjaman Saya</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="loan-history">
+                        <i class="fas fa-history w-5"></i>
+                        <span>Riwayat Pinjaman</span>
+                    </div>
+                    <div class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3" data-page="profile">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>Pengaturan Profil</span>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <!-- Logout -->
+                <div onclick="logout()" class="text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>Keluar</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 lg:p-6 w-full">
+            <!-- Search Bar Mobile -->
+            <div class="lg:hidden mb-6">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInputMobile" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Cari judul, penulis, atau ISBN...">
+                </div>
+            </div>
+
+            <!-- Pinjaman Saya Content -->
+            <div id="my-loans-content" class="page-content">
+                <!-- Header -->
+                <div class="mb-6 lg:mb-8">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xl lg:text-2xl font-bold text-gray-800 mb-2">Pinjaman Saya</h2>
+                            <p class="text-gray-600 text-sm lg:text-base">Buku yang sedang Anda pinjam</p>
+                        </div>
+                        <button onclick="goToDashboard()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition flex items-center space-x-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Kembali ke Dashboard</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="mb-6 lg:mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-xl shadow-sm border p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Total Dipinjam</h3>
+                                    <p class="text-3xl font-bold text-gray-800">5</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-lg">
+                                    <i class="fas fa-book text-blue-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Akan Dikembalikan</h3>
+                                    <p class="text-3xl font-bold text-yellow-500">3</p>
+                                </div>
+                                <div class="p-3 bg-yellow-50 rounded-lg">
+                                    <i class="fas fa-clock text-yellow-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm border p-5">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Terlambat</h3>
+                                    <p class="text-3xl font-bold text-red-500">1</p>
+                                </div>
+                                <div class="p-3 bg-red-50 rounded-lg">
+                                    <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-6 lg:my-8"></div>
+
+                <!-- Daftar Pinjaman -->
+                <div class="mb-6 lg:mb-8">
+                    <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4">Buku yang Sedang Dipinjam</h3>
+                    
+                    <div class="scroll-container">
+                        <div class="space-y-4 pb-4">
+                            <!-- Pinjaman 1 -->
+                            <div class="book-card bg-white rounded-xl shadow-sm border p-5">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-book text-blue-500 text-xl"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-gray-800 text-lg">Made in Abbys - volume 1</h4>
+                                                <p class="text-sm text-gray-600 mt-1">Tankarini Attila</p>
+                                                <div class="flex flex-wrap gap-2 mt-3">
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span>Dipinjam: 26-11-2025</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-check"></i>
+                                                        <span>Jatuh Tempo: 10-12-2025</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 lg:mt-0 lg:ml-4 flex flex-col items-end space-y-2">
+                                        <span class="status-badge status-dipinjam">Sedang Dipinjam</span>
+                                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                            <i class="fas fa-undo-alt mr-1"></i> Kembalikan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pinjaman 2 -->
+                            <div class="book-card bg-white rounded-xl shadow-sm border p-5">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-pink-100 to-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-book text-pink-500 text-xl"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-gray-800 text-lg">Violet Evergarden - volume 1</h4>
+                                                <p class="text-sm text-gray-600 mt-1">Kana Aarsuali</p>
+                                                <div class="flex flex-wrap gap-2 mt-3">
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span>Dipinjam: 20-11-2025</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1 text-sm text-red-500">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                        <span>Jatuh Tempo: 03-12-2025 (Terlambat)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 lg:mt-0 lg:ml-4 flex flex-col items-end space-y-2">
+                                        <span class="status-badge status-terlambat">Terlambat</span>
+                                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                            <i class="fas fa-undo-alt mr-1"></i> Kembalikan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pinjaman 3 -->
+                            <div class="book-card bg-white rounded-xl shadow-sm border p-5">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-book text-purple-500 text-xl"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-gray-800 text-lg">Madoka Magica - Volume 1</h4>
+                                                <p class="text-sm text-gray-600 mt-1">Gen Urosuchi</p>
+                                                <div class="flex flex-wrap gap-2 mt-3">
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span>Dipinjam: 25-11-2025</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-check"></i>
+                                                        <span>Jatuh Tempo: 09-12-2025</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 lg:mt-0 lg:ml-4 flex flex-col items-end space-y-2">
+                                        <span class="status-badge status-dipinjam">Sedang Dipinjam</span>
+                                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                            <i class="fas fa-undo-alt mr-1"></i> Kembalikan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pinjaman 4 -->
+                            <div class="book-card bg-white rounded-xl shadow-sm border p-5">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-green-100 to-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-book text-green-500 text-xl"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-gray-800 text-lg">Nek</h4>
+                                                <p class="text-sm text-gray-600 mt-1">Shuki</p>
+                                                <div class="flex flex-wrap gap-2 mt-3">
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span>Dipinjam: 28-11-2025</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-check"></i>
+                                                        <span>Jatuh Tempo: 12-12-2025</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 lg:mt-0 lg:ml-4 flex flex-col items-end space-y-2">
+                                        <span class="status-badge status-dipinjam">Sedang Dipinjam</span>
+                                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                            <i class="fas fa-undo-alt mr-1"></i> Kembalikan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pinjaman 5 -->
+                            <div class="book-card bg-white rounded-xl shadow-sm border p-5">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-16 h-20 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-book text-yellow-500 text-xl"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-bold text-gray-800 text-lg">Attack on Titan - Volume 1</h4>
+                                                <p class="text-sm text-gray-600 mt-1">Hajime Isayama</p>
+                                                <div class="flex flex-wrap gap-2 mt-3">
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <span>Dipinjam: 30-11-2025</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-1 text-sm text-gray-500">
+                                                        <i class="fas fa-calendar-check"></i>
+                                                        <span>Jatuh Tempo: 14-12-2025</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 lg:mt-0 lg:ml-4 flex flex-col items-end space-y-2">
+                                        <span class="status-badge status-dipinjam">Sedang Dipinjam</span>
+                                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                                            <i class="fas fa-undo-alt mr-1"></i> Kembalikan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tampilkan email user
+        const userEmail = localStorage.getItem('userEmail') || 'm.halkal.alfat@gmail.com';
+        document.getElementById('userEmail').textContent = userEmail;
+        
+        // Function logout
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
+        }
+
+        // Function untuk kembali ke dashboard
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const overlay = document.querySelector('.overlay');
+            mobileMenu.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners to menu items
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    if (page === 'dashboard') {
+                        goToDashboard();
+                    } else {
+                        setActivePage(page);
+                    }
+                    
+                    // Close mobile menu after selection
+                    if (window.innerWidth < 1024) {
+                        toggleMobileMenu();
+                    }
+                });
+            });
+            
+            // Add event listeners to return book buttons
+            const returnButtons = document.querySelectorAll('.bg-green-500');
+            returnButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookTitle = this.closest('.book-card').querySelector('h4').textContent;
+                    if (confirm(`Apakah Anda yakin ingin mengembalikan buku: ${bookTitle}?`)) {
+                        alert(`Buku ${bookTitle} berhasil dikembalikan!`);
+                        // In a real app, you would update the UI or refresh the page
+                    }
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch(this.value);
+                    }
+                });
+            }
+            
+            if (searchInputMobile) {
+                searchInputMobile.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch(this.value);
+                    }
+                });
+            }
+        });
+
+        // Set active page and update menu
+        function setActivePage(page) {
+            // In a real application, you would navigate to different pages
+            // For this demo, we'll just show an alert
+            alert(`Navigasi ke halaman: ${page}`);
+            
+            // Update active menu item
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('bg-blue-50', 'text-blue-600');
+                item.classList.add('text-gray-600', 'hover:bg-gray-100');
+                
+                if (item.getAttribute('data-page') === page) {
+                    item.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    item.classList.add('bg-blue-50', 'text-blue-600');
+                }
+            });
+        }
+
+        // Perform search
+        function performSearch(query) {
+            if (query.trim() !== '') {
+                alert(`Mencari: ${query}`);
+                // In a real application, you would implement actual search logic here
+            }
+        }
+
+        // Close mobile menu on resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                const mobileMenu = document.querySelector('.mobile-menu');
+                const overlay = document.querySelector('.overlay');
+                mobileMenu.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
