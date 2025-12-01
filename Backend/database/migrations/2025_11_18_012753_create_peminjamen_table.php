@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjamen', function (Blueprint $table) {
-            $table->id('id_meminjam');
+            $table->id();
             $table->date('tanggal_minjam');
             $table->date('jatuh_tempo');
-            $table->enum('status',['sedang_dipinjam', 'sudah_dikembalikan', 'lewat_tempo']);
+            $table->enum('status_peminjaman',['sedang_dipinjam', 'sudah_dikembalikan', 'lewat_tempo']);
+            $table->enum('status_perizinan',['ditolak', 'menunggu_respon', 'diizinkan'])->default('menunggu_respon');
+            $table->foreignId('user_id');
+            $table->foreignId('buku_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('buku_id')->references('id')->on('bukus')->onDelete('cascade');
             $table->timestamps();
         });
     }

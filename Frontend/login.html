@@ -73,7 +73,7 @@
 
                 <!-- Login Form -->
                 <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <form class="space-y-2" id="loginForm">
+                    <form class="space-y-2" id="loginForm" method="post">
                         <!-- Email / ID Pengguna -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-3">
@@ -82,7 +82,6 @@
                             <input type="text" id="email"
                                    class="input-field text-gray-700 placeholder-gray-400"
                                    placeholder="user@demo.com"
-                                   value="user@demo.com"
                                    required>
                         </div>
 
@@ -97,7 +96,6 @@
                                 <input type="password" id="password"
                                        class="input-field text-gray-700 placeholder-gray-400 pr-10"
                                        placeholder="••••••••"
-                                       value="password123"
                                        required>
                                 <button type="button" 
                                         class="absolute right-0 top-1/2 transform -translate-y-1/2 password-toggle text-gray-400"
@@ -133,8 +131,8 @@
                                     <input type="radio" name="role" value="admin" class="text-blue-600 focus:ring-blue-500">
                                     <span class="ml-3 text-sm text-gray-700">Admin</span>
                                 </label>
-                            </div>
-                        </div>
+                            </div> 
+                        </div> 
 
                         <div class="section-divider"></div>
 
@@ -163,8 +161,8 @@
             </div>
         </div>
     </div>
-
-    <script>
+    <script src="js/index.js"></script>
+    <!-- <script>
         // Function untuk toggle show/hide password
         function togglePassword() {
             const passwordInput = document.getElementById('password');
@@ -183,31 +181,31 @@
         }
 
         // Login form handler
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent form dari reload page
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault(); // Prevent form dari reload page
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const role = document.querySelector('input[name="role"]:checked').value;
+        //     const email = document.getElementById('email').value;
+        //     const password = document.getElementById('password').value;
+        //     const role = document.querySelector('input[name="role"]:checked').value;
             
-            // Validasi sederhana
-            if (email && password) {
-                // Simpan status login di localStorage
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userRole', role);
+        //     // Validasi sederhana
+        //     if (email && password) {
+        //         // Simpan status login di localStorage
+        //         localStorage.setItem('isLoggedIn', 'true');
+        //         localStorage.setItem('userEmail', email);
+        //         localStorage.setItem('userRole', role);
                 
-                // Redirect ke dashboard
-                window.location.href = 'dashboard.html';
-            } else {
-                alert('Harap masukkan email dan password!');
-            }
-        });
+        //         // Redirect ke dashboard
+        //         window.location.href = 'dashboard.html';
+        //     } else {
+        //         alert('Harap masukkan email dan password!');
+        //     }
+        // });
 
-        // Auto-fill untuk demo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Values sudah di-set di HTML
-        });
-    </script>
+        // // Auto-fill untuk demo
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Values sudah di-set di HTML
+        // });
+    </script> -->
 </body>
 </html>

@@ -14,16 +14,7 @@ class PenggunaController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        if($user->role === 'admin'){
-            $akun = User::whereIn('role', ['pengguna', 'petugas'])->get();
-            return response()->json(
-                [
-                    'data' => $akun,
-                    'status' => '200 || Success',
-                ], 200
-            );
-        }
+        
     }
 
     /**

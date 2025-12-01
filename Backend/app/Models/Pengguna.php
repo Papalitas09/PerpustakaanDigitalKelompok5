@@ -8,3 +8,4 @@ class Pengguna extends Model
 {
     protected $fillable = ['nama', 'email', 'password', 'role']; 
 }
+

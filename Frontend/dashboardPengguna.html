@@ -52,11 +52,11 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Check login status -->
-    <script>
+    <!-- <script>
         if (!localStorage.getItem('isLoggedIn')) {
             window.location.href = 'login.html';
         }
-    </script>
+    </script> -->
 
     <!-- Mobile Header -->
     <div class="lg:hidden bg-white shadow-sm border-b sticky top-0 z-30">
@@ -270,130 +270,12 @@
                 <!-- Rekomendasi Buku Section -->
                 <div class="mb-6 lg:mb-8">
                     <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4">Rekomendasi Buku Hanya Untuk Mu</h3>
-                    
-                    <div class="scroll-container">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-4">
-                            <!-- Book 1 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Made in Abbys</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Made in Abbys - volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">shawaii Akita</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 2 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-pink-100 to-red-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Violet Evergarden</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Violet Evergarden - volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">kana Aarsuali</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 3 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Madoka Magica</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Madoka Magica - Volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Gen Urosuchi</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 4 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-green-100 to-teal-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Nek</h4>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Nek</h4>
-                                    <p class="text-sm text-gray-600 mt-1">shuki</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Additional Books -->
-                            <!-- Book 5 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-yellow-100 to-orange-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Attack on Titan</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Attack on Titan - Volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Hajime Isayama</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 6 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">One Piece</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">One Piece - Volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Eiichiro Oda</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 7 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-red-100 to-pink-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">Demon Slayer</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">Demon Slayer - Volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Koyoharu Gotouge</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Book 8 -->
-                            <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
-                                <div class="h-40 bg-gradient-to-br from-teal-100 to-green-100 flex items-center justify-center">
-                                    <div class="text-center p-4">
-                                        <h4 class="font-bold text-gray-800">My Hero Academia</h4>
-                                        <p class="text-sm text-gray-600 mt-1">Volume 1</p>
-                                    </div>
-                                </div>
-                                <div class="p-4">
-                                    <h4 class="font-bold text-gray-800">My Hero Academia - Volume 1</h4>
-                                    <p class="text-sm text-gray-600 mt-1">Kohei Horikoshi</p>
-                                    <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">Pinjam</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="recommendationContainer" 
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-4">
+                </div>
+
+                  
+                          
                 </div>
             </div>
         </div>
@@ -405,11 +287,11 @@
         document.getElementById('userEmail').textContent = userEmail;
         
         // Function logout
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            window.location.href = 'login.html';
-        }
+        // function logout() {
+        //     localStorage.removeItem('isLoggedIn');
+        //     localStorage.removeItem('userEmail');
+        //     window.location.href = 'login.html';
+        // }
 
         // Mobile menu toggle
         function toggleMobileMenu() {
@@ -468,6 +350,61 @@
                 overlay.classList.remove('active');
             }
         });
+
+
+        const base_url = "http://127.0.0.1:8000/api/buku";
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadBooks();
+});
+
+async function loadBooks() {
+    const bookList = document.getElementById("bookList");
+    bookList.innerHTML = "<p class='text-gray-600'>Loading buku...</p>";
+
+    try {
+        const response = await fetch(base_url);
+
+        if (!response.ok) {
+            throw new Error("Gagal fetch data API");
+        }
+
+        const books = await response.json();
+
+        bookList.innerHTML = ""; // Bersihkan loading
+
+        books.forEach(buku => {
+            const card = `
+                <div class="book-card bg-white rounded-xl shadow-sm border overflow-hidden">
+                    <div class="h-40 bg-gray-200 flex items-center justify-center overflow-hidden">
+                        <img src="${buku.cover}" alt="${buku.judul}" class="h-full object-cover">
+                    </div>
+
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-800">${buku.judul}</h4>
+                        <p class="text-sm text-gray-600 mt-1">${buku.pengarang}</p>
+
+                        <button 
+                            onclick="pinjamBuku('${buku.judul}')"
+                            class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm w-full">
+                            Pinjam
+                        </button>
+                    </div>
+                </div>
+            `;
+            bookList.innerHTML += card;
+        });
+
+    } catch (error) {
+        console.error(error);
+        bookList.innerHTML = `<p class="text-red-500">Gagal mengambil data buku.</p>`;
+    }
+}
+
+function pinjamBuku(judul) {
+    alert(`Anda meminjam: ${judul}`);
+}
+
     </script>
 </body>
 </html>

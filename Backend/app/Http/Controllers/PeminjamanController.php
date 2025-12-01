@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buku;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -12,7 +14,14 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $peminjaman = Peminjaman::where('user_id', $user->id)->get();
+        if($peminjaman){
+            return response()->json([
+                'message' => 'Sukses',
+                'data' => $peminjaman
+            ]);
+        }
     }
 
     /**
@@ -20,7 +29,7 @@ class PeminjamanController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -28,15 +37,38 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+        'buku_id' => 'required|exists:bukus,id',
+        'user_id' => 'required|exists:users,id',
+    ]);
+
+    $userId = auth()->id();
+
+    // Cek apakah buku tersedia
+    $book = Buku::findOrFail($request->buku_id);
+
+    $peminjaman = Peminjaman::create([
+        'user_id' => $userId,
+        'buku_id' => $book->id,
+        'tanggal_minjam' => now(),
+        'jatuh_tempo' => now()->addDays(7), // contoh 7 hari
+        'status_peminjaman' => 'sedang_dipinjam',
+        'status_perizinan' => 'menunggu_respon'
+    ]);
+
+    return response()->json([
+        'message' => 'Peminjaman berhasil dibuat',
+        'data' => $peminjaman
+    ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Peminjaman $peminjaman)
+    public function show($id)
     {
-        //
+        $peminjaman = Peminjaman::findOrFail($id);
+       return response()->json($peminjaman);
     }
 
     /**
@@ -58,8 +90,23 @@ class PeminjamanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Peminjaman $peminjaman)
+    public function destroy($id)
     {
-        //
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->delete();
+    }
+
+     public function ShowAllRequest(){
+        $peminjaman = Peminjaman::where('status_perizinan', 'menunggu_respon')->get();
+        if($peminjaman){
+            return response()->json([
+                'Message' => 'berhasil',
+                'data' => $peminjaman
+            ]);
+        } else{
+             return response()->json([
+                'Message' => 'gagal'
+            ]);
+        }
     }
 }
