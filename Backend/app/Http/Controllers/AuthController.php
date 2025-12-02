@@ -10,52 +10,62 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function Login(Request $request)
+    public function LoginView()
     {
-        if(!Auth::attempt($request->only('email', 'password'))){
-            return response()->json([
-                'message' => 'Invalid akun'
-            ], 401);
-        }
+        return view('auth.login');
+    }
 
-        $token = Auth::user()->createToken('api')->plainTextToken;
+    public function RegisterView(){
+        return view('auth.register');
+    }
 
-        return response()->json([
-            'token' => $token,
-            'message' => 'success'
-        ], 200);
+    public function Login(Request $request){
+        $validasi = $request->validate([
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string',
+        ]);
+        
+        if (Auth::attempt($validasi)) {
+        $request->session()->regenerate();
+       if(Auth::user()->role == "admin"){
+          return redirect()->route('dashboard.admin');
+        }else if(Auth::user()->role == "petugas"){
+          return redirect()->route('');
+       }else{
+        return redirect()->route('dashboard.pengguna');
+      }
+      };
+
+      return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+      ])->onlyInput('email');
+
     }
 
     public function Register(Request $request)
     {
-         $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string',
-        ]);
+        $request->validate([
+        "nama" => "required|string|max:255",
+        "email" => "required|string|email|max:255|unique:users",
+        "password" => "required|string|confirmed",
+      ]);
 
-        
-        $hashedPassword = Hash::make($request->password);
-        $akun = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => $hashedPassword,
-            'role' => 'pengguna'
-        ]);
-        if($akun){
-           return response()->json([
-               'message' => 'Berhasil',
-               'data' => $akun
-           ]);
-        } else{
-            return response()->json([
-               'message' => 'Error'
-           ]);
-        }
+      
+      User::create([
+        "nama"=>$request->nama,
+        "email"=>$request->email,
+        "password"=>bcrypt($request->password),
+        "role"=>"pengguna",
+      ]);
+
+      return redirect()->route('login.view')->with('success','Register Success, Please Login');
     }
 
     public function Logout(Request $request)
     {
-
+        auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect("/");
     }
 }

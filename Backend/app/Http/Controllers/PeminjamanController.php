@@ -16,12 +16,7 @@ class PeminjamanController extends Controller
     {
         $user = Auth::user();
         $peminjaman = Peminjaman::where('user_id', $user->id)->get();
-        if($peminjaman){
-            return response()->json([
-                'message' => 'Sukses',
-                'data' => $peminjaman
-            ]);
-        }
+        return view('pengguna.pinjaman', compact('peminjaman'));
     }
 
     /**

@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check.role' => \App\Http\Middleware\CheckRole::class,
         ]);
+         $middleware->api(append: [
+        \App\Http\Middleware\Cors::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

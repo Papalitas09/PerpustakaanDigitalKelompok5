@@ -1,3 +1,4 @@
+{{-- <iframe src="" frameborder="0"></iframe> --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -40,6 +41,7 @@
 </head>
 <body class="min-h-screen bg-gray-50">
     <div class="flex min-h-screen">
+        
         <!-- Left Side - Desktop Only -->
         <div class="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 to-purple-700 p-12 text-white">
             <div class="max-w-md mx-auto flex flex-col justify-center">
@@ -73,7 +75,18 @@
 
                 <!-- Login Form -->
                 <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <form class="space-y-2" id="loginForm" method="post">
+                    <form class="space-y-2" action="{{ route('login.process') }}" method="post">
+                        @csrf
+                        @method("POST")
+                         @if ($errors->any())
+                        <div class="mb-4 text-red-500">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                         <!-- Email / ID Pengguna -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-3">
@@ -82,6 +95,7 @@
                             <input type="text" id="email"
                                    class="input-field text-gray-700 placeholder-gray-400"
                                    placeholder="user@demo.com"
+                                   name="email"
                                    required>
                         </div>
 
@@ -96,6 +110,7 @@
                                 <input type="password" id="password"
                                        class="input-field text-gray-700 placeholder-gray-400 pr-10"
                                        placeholder="••••••••"
+                                       name="password"
                                        required>
                                 <button type="button" 
                                         class="absolute right-0 top-1/2 transform -translate-y-1/2 password-toggle text-gray-400"
@@ -152,7 +167,7 @@
                     <div class="text-center mt-8 pt-6 border-t border-gray-200">
                         <p class="text-gray-600 text-sm">
                             Belum punya akun? 
-                            <a href="register.html" class="text-blue-600 font-semibold hover:text-blue-500 transition">
+                            <a href="{{ route('register.view') }}" class="text-blue-600 font-semibold hover:text-blue-500 transition">
                                 Daftar di sini
                             </a>
                         </p>
@@ -161,7 +176,6 @@
             </div>
         </div>
     </div>
-    <script src="js/index.js"></script>
     <!-- <script>
         // Function untuk toggle show/hide password
        

@@ -13,13 +13,8 @@ class BukuController extends Controller
      */
     public function index()
     {
-        $buku = Buku::all();
-        return response()->json(
-            [
-                'data' => $buku,
-                'status' => '200 || Success',
-            ], 200
-        );
+        $buku_all = Buku::all();
+       return redirect()->route("dashboard.pengguna", compact("$buku_all"));
     }
 
     /**
@@ -66,7 +61,7 @@ class BukuController extends Controller
     public function show($id)
     {
         $buku = Buku::findOrFail($id);
-        return response()->json($buku);
+         return view('pengguna.detailBuku', compact('buku'));
 
     }
 
@@ -133,31 +128,11 @@ class BukuController extends Controller
     public function CountBukuPinjam(){
         $user = Auth::user();
         $buku = Buku::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->count();
-        if($buku){
-            return response()->json([
-                'message' => 'Sukses',
-                'data' => $buku
-            ], 200);
-        } else{
-            return response()->json([
-                'message' => 'Data tidak ada atau tidak valid !'
-            ]);
-        }
     }
 
      public function CountJatuhTempo(){
         $user = Auth::user();
         $buku = Buku::where('status_peminjaman', 'jatuh_tempo')->where('user_id', $user->id)->count();
-        if($buku){
-            return response()->json([
-                'message' => 'Sukses',
-                'data' => $buku
-            ], 200);
-        } else{
-            return response()->json([
-                'message' => 'Data tidak ada atau tidak valid !'
-            ]);
-        }
     }
 
    

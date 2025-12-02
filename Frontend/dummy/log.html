@@ -3,52 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Login Tailwind</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Form Login - Fetch API</title>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="login-container bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm">
+<body>
+    <h2>Form Login</h2>
+    
+    <form id="loginForm">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
         
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Masuk</h2>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
         
-        <form id="loginForm" method="post"> 
-            
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required
-                    placeholder="Masukkan email Anda"
-                    class="shadow appearance-none border border-gray-300 rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
-                >
-            </div>
-            
-            <div class="mb-6">
-                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required
-                    placeholder="********"
-                    class="shadow appearance-none border border-gray-300 rounded w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
-                >
-            </div>
-            
-            <div class="flex items-center justify-between">
-                <button 
-                    type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-200 ease-in-out"
-                >
-                    Login
-                </button>
-            </div>
-            
-        </form>
-    </div>
+        <button type="submit">Login</button>
+    </form>
 
-    <script src="../js/index.js"></script> 
+    <div id="message"></div>
+
+    <script>
+        // Ambil elemen form dan message
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+
+        // Event listener untuk form submit
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Mencegah form reload halaman
+
+            // Ambil nilai dari input
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Siapkan data yang akan dikirim
+            const loginData = {
+                email: email,
+                password: password
+            };
+
+            try {
+                // Tampilkan loading
+                messageDiv.textContent = 'Loading...';
+
+                // Kirim request ke API
+                const response = await fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                // Parse response menjadi JSON
+                const data = await response.json();
+
+                // Cek apakah request berhasil
+                if (response.ok) {
+                    messageDiv.textContent = 'Login berhasil! Token: ' + data.token;
+                    console.log('Data response:', data);
+                    
+                    // Simpan token ke localStorage (opsional)
+                    // localStorage.setItem('token', data.token);
+                    
+                } else {
+                    messageDiv.textContent = 'Login gagal: ' + (data.error || 'Terjadi kesalahan');
+                }
+
+            } catch (error) {
+                // Tangani error (misal: koneksi terputus)
+                messageDiv.textContent = 'Error: ' + error.message;
+                console.error('Error:', error);
+            }
+        });
+
+        /* 
+        PENJELASAN:
+        
+        1. e.preventDefault() - Mencegah form reload halaman
+        
+        2. fetch() - Fungsi untuk melakukan HTTP request
+           - Parameter 1: URL API
+           - Parameter 2: Options (method, headers, body)
+        
+        3. method: 'POST' - Metode HTTP yang digunakan
+        
+        4. headers - Informasi tambahan untuk request
+           'Content-Type': 'application/json' - Memberitahu server bahwa kita kirim JSON
+        
+        5. body - Data yang dikirim, harus diubah ke string dengan JSON.stringify()
+        
+        6. await - Menunggu response dari API
+        
+        7. response.json() - Mengubah response menjadi objek JavaScript
+        
+        8. response.ok - Mengecek apakah status code 200-299 (sukses)
+        
+        9. try-catch - Menangani error jika terjadi masalah
+        
+        UNTUK TESTING:
+        Email: eve.holt@reqres.in
+        Password: cityslicka
+        */
+    </script>
 </body>
 </html>
