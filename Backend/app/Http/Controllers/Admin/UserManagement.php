@@ -17,23 +17,27 @@ class UserManagement extends Controller
     {
         $user = Auth::user();
         $akun = User::whereIn('role', ['pengguna', 'petugas'])->get();
-        return response()->json(
-            [
-                'data' => $akun,
-                'status' => '200 || Success',
-            ], 200
-        );
+        return view('admin.akun.index', compact('akun'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+    public function create(){
+        return view('admin.akun.create');
+    }
+
+    public function edit($id){
+        $akun = User::findOrFail($id);
+        return view('admin.akun.edit', compact('akun'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string',
         ]);
 
         
@@ -44,16 +48,7 @@ class UserManagement extends Controller
             'password' => $hashedPassword,
             'role' => 'pengguna'
         ]);
-        if($akun){
-           return response()->json([
-               'message' => 'Berhasil',
-               'data' => $akun
-           ]);
-        } else{
-            return response()->json([
-               'message' => 'Error'
-           ]);
-        }
+        return redirect()->route('admin.akun.index');
     }
 
     /**
@@ -82,7 +77,7 @@ class UserManagement extends Controller
         'email' => 'required|string|email|max:255|unique:users,email,' . $id,
         'role' => 'required|in:admin,pengguna,petugas',
         // Password bersifat opsional, tetapi jika ada, harus divalidasi
-        'password' => 'nullable|string|min:8|confirmed',
+        'password' => 'nullable|string',
     ];
 
     $validate = $request->validate($validationRules);
@@ -105,13 +100,10 @@ class UserManagement extends Controller
     
     // Lakukan pembaruan pada instance model yang sudah ditemukan
     $user->update($dataToUpdate);
+    
 
     // 4. Berikan Respons Sukses
-    return response()->json([
-        'message' => 'Update Akun Berhasil',
-        'status' => '200 | Ok',
-        'data' => $user // Mengembalikan instance model User yang sudah diperbarui
-    ], 200);
+    return redirect()->route('admin.akun.index');
 
     }
 
@@ -123,9 +115,7 @@ class UserManagement extends Controller
         $user = User::findOrFail($id);
         $user->delete();
          if($user){
-            return response()->json([
-                'message' => "Berhasil di hapus"
-            ]);
+            return redirect()->route('admin.akun.index');
         } else {
             return response()->json([
                 'message' => "Gagal"

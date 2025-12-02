@@ -18,7 +18,7 @@ class BukuSeeder extends Seeder
             DB::table("bukus")->insert([
                 'judul' => "Bulan",
                 "pengarang" => $faker->name(),
-                "cover" => "Belom ada",
+                "cover" => "/images/op.jpg",
                 "isbn" => "0845486" ,
                 "penerbit" => "John Obami",
                 "deskripsi_buku" => "jelek" ,

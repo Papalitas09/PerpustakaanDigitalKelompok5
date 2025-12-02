@@ -11,14 +11,20 @@
 <body>
  {{-- Header --}}
     <header>
-        @include('components.sidebar')
+        @include('components.header')
     </header>
+    <section class=" flex justify-between">
+        
+    
+        <div class="left-0">
+            @include('components.sidebar.sidebar')
+        </div>
+        {{-- Main Content --}}
+        <main class="container p-5">
+            @yield('content')
+        </main>
 
-    {{-- Main Content --}}
-    <main class="container">
-        @yield('content')
-    </main>
-
+    </section>
     {{-- Footer --}}
     {{-- <footer>
         @include('footer')

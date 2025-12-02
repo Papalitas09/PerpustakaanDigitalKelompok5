@@ -14,7 +14,7 @@ class PenggunaSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create("Id_ID");
         for($o = 0; $o <= 20; $o++){
             DB::table("users")->insert([
                 "nama" => $faker->name(),

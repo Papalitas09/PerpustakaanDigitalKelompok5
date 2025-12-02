@@ -13,16 +13,16 @@ class BukuController extends Controller
      */
     public function index()
     {
-        $buku_all = Buku::all();
-       return redirect()->route("dashboard.pengguna", compact("$buku_all"));
+        $bukus = Buku::where('stok_buku', '>=', 1)->get();
+        return view('petugas.buku.index', compact('bukus'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create()
     {
-        
+        return view('petugas.buku.create');
     }
 
     /**
@@ -34,19 +34,22 @@ class BukuController extends Controller
             'judul' => 'required|string',
             'pengarang' => 'required:string',
             'penerbit' => 'required|string',
-            'cover' => 'required|string',
+            'cover' => 'required|image|mimes:jpeg,png,jpg,gif',
             'tanggal_terbit' => 'required',
             'deskripsi_buku' => 'string',
             'stok_buku' => 'required|integer',
             'isbn' => 'required'
         ]);
+
+        if ($request->hasFile('cover')) {
+                $file = $request->file('cover');
+                $path = $file->store('covers', 'public');
+                $validate['cover'] = $path;
+            }
+
         $data = Buku::create($validate);
         if($data){
-            return response()->json([
-                'message' => 'Clear',
-                'status' => '200 | Ok',
-                'data' => $data
-            ], 200);
+            return redirect()->route('buku.petugas.index');
         } else {
             return response()->json([
                 'message' => 'Not Clear',
@@ -68,9 +71,10 @@ class BukuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id, Request $request)
+    public function edit($id)
     {
-       
+        $buku = Buku::findOrFail($id);
+       return view('petugas.buku.edit', compact('buku'));
 
     }
 
@@ -84,26 +88,26 @@ class BukuController extends Controller
     // 2. Lakukan Validasi
     // Catatan: Jika validasi gagal, Laravel akan otomatis melempar 422 dan menghentikan eksekusi.
         $validate = $request->validate([
-            'judul' => 'required|string',
-            // PERBAIKAN SINTAKS: Ubah 'required:string' menjadi 'required|string'
-            'pengarang' => 'required|string', 
+           'judul' => 'required|string',
+            'pengarang' => 'required:string',
             'penerbit' => 'required|string',
-            'cover' => 'required|string',
-            'tanggal_terbit' => 'required|date', // Tambahkan validasi tipe date jika kolom DB adalah date
-            'deskripsi_buku' => 'string|nullable', // Tambahkan nullable jika deskripsi boleh kosong
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'tanggal_terbit' => 'required',
+            'deskripsi_buku' => 'string',
             'stok_buku' => 'required|integer',
-            'isbn' => 'required|string' // Tambahkan validasi tipe string
+            'isbn' => 'required'// Tambahkan validasi tipe string
         ]);
 
+          if ($request->hasFile('cover')) {
+                $file = $request->file('cover');
+                $path = $file->store('covers', 'public');
+                $validate['cover'] = $path;
+            }
     // 3. Update instance model yang sudah ditemukan
         $buku->update($validate);
         
         // 4. Berikan Respons Sukses
-        return response()->json([
-            'message' => 'Clear',
-            'status' => '200 | Ok',
-            'data' => $buku // Mengembalikan instance model yang sudah diperbarui
-        ], 200);
+        return redirect()->route('buku.index');
     }
 
     /**
@@ -113,21 +117,12 @@ class BukuController extends Controller
     {
         $buku = Buku::findOrFail($id);
         $buku->delete();
-        if($buku){
-            return response()->json([
-                'message' => "Berhasil di hapus"
-            ]);
-        } else {
-            return response()->json([
-                'message' => "Gagal"
-            ]);
-        }
+       return redirect()->route('buku.index');
 
     }
 
     public function CountBukuPinjam(){
         $user = Auth::user();
-        $buku = Buku::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->count();
     }
 
      public function CountJatuhTempo(){

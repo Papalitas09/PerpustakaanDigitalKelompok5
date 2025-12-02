@@ -2,14 +2,14 @@
 @section('title', $buku->judul)
 
 @section('content')
-<div class="flex">
+<div class="flex items-center justify-center">
 
     <div class="w-full lg:ml-64 min-h-screen bg-gray-100 py-8 px-4 lg:px-8">
         <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
 
             {{-- Gambar --}}
             <div class="w-full h-80 lg:h-96 bg-gray-200">
-                <img src="{{ $buku->cover }}" class="w-full h-full object-cover" alt="">
+                <img src="{{asset('storage/' . $buku->cover) }}" class="w-full h-full object-cover" alt="">
             </div>
 
             {{-- Detail --}}
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                        <a href="/buku" 
+                        <a href="{{ route('dashboard.pengguna') }}" 
                             class="px-6 py-3 bg-gray-900 text-white rounded-lg text-center">
                             ← Kembali
                         </a>
