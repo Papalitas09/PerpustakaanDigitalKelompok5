@@ -65,11 +65,11 @@
                         <i class="fas fa-chart-bar w-5"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="{{ route('buku.petugas.index') }}" class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3 block">
+                    <a href="{{ route('akun.admin.index') }}" class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3 block">
                         <i class="fas fa-book-open w-5"></i>
                         <span>Data Akun</span>
                     </a>
-                    <a href="{{ route('peminjaman.all.petugas') }}" class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3 block">
+                    <a href="{{ route('peminjaman.admin.index') }}" class="menu-item text-gray-600 rounded-lg p-3 hover:bg-gray-100 cursor-pointer flex items-center space-x-3 block">
                         <i class="fas fa-book w-5"></i>
                         <span>Data Pinjaman</span>
                     </a>

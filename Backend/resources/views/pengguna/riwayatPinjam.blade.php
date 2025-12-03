@@ -69,8 +69,8 @@
                 <div class="mb-6 lg:mb-8">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h2 class="text-xl lg:text-2xl font-bold text-gray-800 mb-2">Pinjaman Saya</h2>
-                            <p class="text-gray-600 text-sm lg:text-base">Buku yang sedang Anda pinjam</p>
+                            <h2 class="text-xl lg:text-2xl font-bold text-gray-800 mb-2">Riwayat Peminjaman </h2>
+                            <p class="text-gray-600 text-sm lg:text-base">Buku yang sedang & sudah yang Anda pinjam</p>
                         </div>
                         <button onclick="goToDashboard()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition flex items-center space-x-2">
                             <i class="fas fa-arrow-left"></i>
@@ -85,7 +85,7 @@
                         <div class="bg-white rounded-xl shadow-sm border p-5">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Total Dipinjam</h3>
+                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Total Diizinkan</h3>
                                     <p class="text-3xl font-bold text-gray-800">{{ $buku_pinjam }}</p>
                                 </div>
                                 <div class="p-3 bg-blue-50 rounded-lg">
@@ -123,10 +123,10 @@
 
                 <!-- Daftar Pinjaman -->
                 <div class="mb-6 lg:mb-8">
-                    <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4">Buku yang Sedang Dipinjam</h3>
+                    <h3 class="text-lg lg:text-xl font-bold text-gray-800 mb-4">Riwayat Peminjaman</h3>
                     
                     <div class="scroll-container">
-                        @foreach ( $peminjaman as $data )
+                        @foreach ( $peminjaman_universal as $data )
                         <div class="space-y-4 pb-4">
                             <!-- Pinjaman 5 -->
                             <div class="book-card bg-white rounded-xl shadow-sm border p-5">

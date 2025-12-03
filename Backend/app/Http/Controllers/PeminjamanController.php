@@ -130,11 +130,17 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::where('user_id', $user->id)->where('status_perizinan', 'diizinkan')->get();
         $buku_pinjam = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'diizinkan')->count();
         $buku_jatuhTempo = Peminjaman::where('status_peminjaman', 'jatuh_tempo')->where('user_id', $user->id)->count();
-        return view('pengguna.pinjaman', compact(['peminjaman', 'buku_pinjam', 'buku_jatuhTempo']));
+         $buku_req = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'menunggu_respon')->count();
+        return view('pengguna.pinjaman', compact(['peminjaman', 'buku_pinjam', 'buku_jatuhTempo', 'buku_req']));
     }
 
     public function ShowRiwayatPeminjaman(){
-        return view('pengguna.riwayatPinjam');
+        $user = Auth::user();
+        $peminjaman_universal = Peminjaman::where('user_id', $user->id)->get();
+        $buku_pinjam = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'diizinkan')->count();
+        $buku_jatuhTempo = Peminjaman::where('status_peminjaman', 'jatuh_tempo')->where('user_id', $user->id)->count();
+         $buku_req = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'menunggu_respon')->count();
+        return view('pengguna.riwayatPinjam', compact(['peminjaman_universal', 'buku_pinjam', 'buku_jatuhTempo', 'buku_req']));
     }
 
     public function Approve($id){
@@ -145,13 +151,13 @@ class PeminjamanController extends Controller
             return back()->withErrors(['status' => 'Peminjaman sudah diproses.']);
         }
 
-        if ($buku->stok < 1) {
-            return back()->withErrors(['stok' => 'Stok buku habis.']);
-        }
+        // if ($buku->stok < 1) {
+        //     return back()->withErrors(['stok_buku' => 'Stok buku habis.']);
+        // }
 
-        $buku->decrement('stok_buku');
+        // $buku->decrement('stok_buku');
 
-        $peminjaman->update([
+         $peminjaman->update([
             'status_perizinan' => 'diizinkan'
         ]);
 

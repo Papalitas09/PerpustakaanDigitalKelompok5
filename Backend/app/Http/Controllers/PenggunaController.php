@@ -23,9 +23,10 @@ class PenggunaController extends Controller
     {
         $user = Auth::user();
         $buku_all = Buku::all();
-        $buku_pinjam = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->count();
+        $buku_pinjam = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'diizinkan')->count();
+        $buku_req = Peminjaman::where('status_peminjaman', 'sedang_dipinjam')->where('user_id', $user->id)->where('status_perizinan', 'menunggu_respon')->count();
         $buku_jatuhTempo = Peminjaman::where('status_peminjaman', 'jatuh_tempo')->where('user_id', $user->id)->count();
-        return view('pengguna.dashboard', compact(['buku_pinjam', 'buku_jatuhTempo', 'buku_all']));
+        return view('pengguna.dashboard', compact(['buku_pinjam', 'buku_jatuhTempo', 'buku_all', 'buku_req']));
     }
 
     /**

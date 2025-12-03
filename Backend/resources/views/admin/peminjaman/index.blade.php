@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Peminjaman</title>
-</head>
-<body>
-
+@extends('layout')
 <h2>Daftar Peminjaman</h2>
 
 <table border="1" cellpadding="8" cellspacing="0">
@@ -36,13 +28,13 @@
                 <td>{{ $p->status_peminjaman }}</td>
                 <td>{{ $p->status_perizinan }}</td>
                 <td>
-                     <form action="{{ route('peminjaman.admin.approve', $p->id) }}" method="POST" style="display:inline-block;">
+                     <form action="{{ route('approve.request', $p->id) }}" method="POST" style="display:inline-block;">
                     @csrf
                     @method("PUT")
                     <button type="submit">Diizinkan</button>
                     </form>
 
-                    <form action="{{ route('peminjaman.admin.reject', $p->id) }}" method="POST" style="display:inline-block;">
+                    <form action="{{ route('reject.request', $p->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method("PUT")
                         <button type="submit">Ditolak</button>

@@ -120,8 +120,8 @@
                         <div class="bg-white rounded-xl shadow-sm border p-5">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Notifikasi Penting</h3>
-                                    <p class="text-3xl font-bold text-yellow-500">4</p>
+                                    <h3 class="text-sm font-medium text-gray-500 mb-2">Buku Menunggu Request </h3>
+                                    <p class="text-3xl font-bold text-yellow-500">{{ $buku_req }}</p>
                                 </div>
                                 <div class="p-3 bg-yellow-50 rounded-lg">
                                     <i class="fas fa-bell text-yellow-500 text-xl"></i>
